@@ -14,6 +14,7 @@ WINDOW_SIZE_UPPER = 200
 
 GRID_SHOW = 1
 COLOR_OSEBX = "blue"
+COLOR_EXP_FUNC = "#aa49e6"
 
 # From old project --------------------------------------------
 

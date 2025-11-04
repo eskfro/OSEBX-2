@@ -1,8 +1,9 @@
 import numpy as np
 from pathlib import Path
 import src.helpers as helpers
+import src.analysis as analysis
 
-def reader(folder):
+def read(folder):
     datavec = []
     folder_path = Path(folder)
   
@@ -26,6 +27,16 @@ def reader(folder):
 
         clean_datavec.append(clean_data)
 
+    temp_datavec = []
+    for data in clean_datavec:
+        n, p = zip(*data) 
+        n, p = analysis.fill_blanks(n[::-1], p[::-1]) # flip to correct orientation
+        temp_datavec.append([n, p])
+
+    n, p = [], []
+    for data in temp_datavec:
+        #merge all the data in datavec
+        pass
 
     print()
     print("datavec: \n", datavec)
@@ -33,6 +44,4 @@ def reader(folder):
     print("clean_datavec: \n", clean_datavec[0])
     return clean_datavec[0]
 
-
-reader(helpers.FOLDER_OSEBX)
 

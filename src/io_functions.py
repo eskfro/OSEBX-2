@@ -15,14 +15,23 @@ def exit():
 def inputter():
     return 10, 1600
 
-def plotter(x, y):
+def plotter(x, y, Px=100, Py=100, price0=600, a=0.5, b=2, mode=10):
+
+    t = np.linspace(0, 5000, 5000+1)
+
     fig, axs = plt.subplots(2, 1)
     fig.set_size_inches((10, 8))
 
-    axs[0].plot(x, y, color=helpers.COLOR_OSEBX)
+    axs[0].plot(x, y, color=helpers.COLOR_OSEBX, label="OSEBX Index")
+    axs[0].scatter(Px, Py, color="red", label="Today")
     axs[0].grid(helpers.GRID_SHOW)
+    axs[0].plot(t, helpers.exponential_func(t, a, b), color=helpers.COLOR_EXP_FUNC, label="Mean")
 
+    
+
+    
     plt.grid(helpers.GRID_SHOW)
+    plt.legend()
     plt.show()
 
 def printMessage(message):
