@@ -38,10 +38,12 @@ def read(folder):
         #merge all the data in datavec
         pass
 
-    print()
-    print("datavec: \n", datavec)
-    print()
-    print("clean_datavec: \n", clean_datavec[0])
+    if 0:
+        print()
+        print("datavec: \n", datavec)
+        print()
+        print("clean_datavec: \n", clean_datavec[0])
+        
     return clean_datavec[0]
 
 

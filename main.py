@@ -6,8 +6,8 @@ import src.analysis as analysis
 def main():
     c = 0
     while(1 and c == 0):
-        mode, p = io_functions.inputter()
-        mode, p = 50, 1600
+        mode, p_today = io_functions.inputter()
+        mode, p_today = 10, 1606
 
 
         if mode == 10:
@@ -17,13 +17,13 @@ def main():
         else:
             return
 
-        
         data = reader.read(file)
         n, p = zip(*data)
         n, p = analysis.fill_blanks(n[::-1], p[::-1])
-
         a, b = analysis.exponential_regression(n, p)
-        io_functions.plotter(n, p, a=a, b=b)
+        l = len(n)
+        p_norm = analysis.rm_exp_reg(p, a, b, l)
+        io_functions.plotter(n, p, p_norm, Px=helpers.days_since_start(), Py=p_today, a=a, b=b)
 
         c += 1
 

@@ -13,8 +13,12 @@ WINDOW_SIZE_LOWER = 50
 WINDOW_SIZE_UPPER = 200
 
 GRID_SHOW = 1
-COLOR_OSEBX = "blue"
+COLOR_OSEBX = "#f7a44a"
+COLOR_OSEBX_NORM = "#f7a44a"
 COLOR_EXP_FUNC = "#aa49e6"
+COLOR_MA_LO = "#b47516"
+COLOR_MA_HI = "#f00b0b"
+
 
 # From old project --------------------------------------------
 

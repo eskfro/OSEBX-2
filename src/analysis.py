@@ -24,26 +24,39 @@ def fill_blanks(x, y):
     p_interp = np.interp(x_interp, x, y)
     return x_interp, p_interp
 
-    # LITT FOR KOMPLISERT
-    # c, dx = 0, 0
-    # n, p = range(l), range(l)
-    # for i in range(l): p[i] = -1
-    # for i in range(l):
-    #     if i in x and not( p[i] == -1 ) :
-    #         p[i] = y[i]
-    #         continue
-    #     else:
-    #         if i < 1 or i > l: #not allowed
-    #             p[i] = -1
-    #         c = i
-    #         dx = 0
-    #         while c not in x and c < l:
-    #             c+=1
-    #             dx += 1
-    #         a = ( y[c] - y[i-1]) / dx
-    #         b = y[i-1]
-    #         for j in range(dx):
-    #             p[i] = a*j + b
+
+
+def rm_exp_reg(x, a, b, l):
+    p_norm = [0] * l
+    for i in range(l):
+        p_norm[i] = x[i] - helpers.exponential_func(i, a, b)
+    return p_norm
+    
+
+
+
+
+
+# LITT FOR KOMPLISERT
+# c, dx = 0, 0
+# n, p = range(l), range(l)
+# for i in range(l): p[i] = -1
+# for i in range(l):
+#     if i in x and not( p[i] == -1 ) :
+#         p[i] = y[i]
+#         continue
+#     else:
+#         if i < 1 or i > l: #not allowed
+#             p[i] = -1
+#         c = i
+#         dx = 0
+#         while c not in x and c < l:
+#             c+=1
+#             dx += 1
+#         a = ( y[c] - y[i-1]) / dx
+#         b = y[i-1]
+#         for j in range(dx):
+#             p[i] = a*j + b
 
 
         
