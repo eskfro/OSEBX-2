@@ -11,39 +11,53 @@ def read(folder):
         raise FileNotFoundError(f"{folder} does not exist")
     
     for file in folder_path.glob("*.txt"):
-        # temporary comment for testing
+        # ignore test.txt
         if file.name == r"test.txt":
             continue
+
         data = np.loadtxt(file, dtype=str)
         datavec.append(data)
     
+    # Step 1 -> make timeseries
     clean_datavec = []
     for data in datavec:
         clean_data = []
         for idx, row in enumerate(data):
-            n = helpers.date_to_n(row[0])
-            p = float(row[4])
-            clean_data.append( [n, p] )
-
+            n_value = helpers.date_to_n(row[0])
+            p_value = float(row[4])
+            clean_data.append( [n_value, p_value] )
         clean_datavec.append(clean_data)
 
+    # Step 2 -> unzip, flip and interpolate
     temp_datavec = []
     for data in clean_datavec:
-        n, p = zip(*data) 
-        n, p = analysis.fill_blanks(n[::-1], p[::-1]) # flip to correct orientation
-        temp_datavec.append([n, p])
+        n_vals, p_vals = zip(*data) 
+        n_vals, p_vals = n_vals[::-1], p_vals[::-1] 
+        n_vals, p_vals = analysis.fill_blanks(n_vals, p_vals)
+        temp_datavec.append([n_vals, p_vals])
 
-    n, p = [], []
-    for data in temp_datavec:
-        #merge all the data in datavec
-        pass
+    L = helpers.days_since_start()
+    n = list( range(L) )
+    p = [0] * L
 
-    if 0:
-        print()
-        print("datavec: \n", datavec)
-        print()
-        print("clean_datavec: \n", clean_datavec[0])
+    # Step 3 -> combine all data, data = [ [n1, p1], [n2, p2], ... etc ]
+    for data in temp_datavec: 
+        n_vals = data[0]
+        p_vals = data[1]
+        l = len(n_vals)
         
-    return clean_datavec[0]
+        for i in range(l):
+            if p[ n_vals[i] ] == 0:
+                p[ n_vals[i] ] = float( p_vals[i] )
+    
+    # Remove potential zeros at the end of the price array
+    for di in reversed(range(L)):
+        if(p[di] == 0):
+            p.pop(di)
+            n.pop(di)
+    
+        
+   # return clean_datavec[0]
+    return n, p
 
 

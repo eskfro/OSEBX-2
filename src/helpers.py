@@ -38,4 +38,3 @@ def date_to_n(date_type):
         date_type = datetime.strptime(date_type, "%d.%m.%Y")
     # this will be n in the array
     return (date_type - START_DATE).days
-
