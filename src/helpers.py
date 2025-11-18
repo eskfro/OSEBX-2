@@ -5,14 +5,21 @@ from src.modules import *
 FOLDER_OSEBX = "data_osebx/"
 FOLDER_SP500 = "data_sp500/"
 START_DATE = datetime(2014, 5, 7)
+N_CONT_TIME = 5000
 
+# IO stuff
 DELAY = 0.03
 CONSOLE_WIDTH = 120
 VERTICAL_DOT_COUNT = 5
+
+SHOW_GRID = True
+SHOW_PLOT = True
+
+# MA window sizes
 WINDOW_SIZE_LOWER = 50
 WINDOW_SIZE_UPPER = 200
 
-GRID_SHOW = 1
+# Colors
 COLOR_OSEBX = "#f7a44a"
 COLOR_OSEBX_NORM = "#f7a44a"
 COLOR_EXP_FUNC = "#aa49e6"
