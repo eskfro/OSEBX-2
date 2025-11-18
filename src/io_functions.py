@@ -72,7 +72,11 @@ def print_message(message):
      print()
 
 
-def print_result(price, day, price0, a, b):
+def print_result(price, a, b):
+
+    day = helpers.date_to_n( helpers.get_today_date() )
+    price0 = helpers.date_to_n( helpers.START_DATE )
+
     advice = "None"
     expected_price = helpers.exponential_func(day, a, b)
     ratio = round((expected_price - price) / expected_price, 5)

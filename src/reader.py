@@ -56,8 +56,10 @@ def read(folder):
             p.pop(di)
             n.pop(di)
     
-        
-   # return clean_datavec[0]
-    return n, p
+    
+    length = len(n)
+
+    # return clean_datavec[0]
+    return n, p, length
 
 
