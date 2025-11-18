@@ -1,3 +1,4 @@
+from statsmodels.tsa.ar_model import AutoReg
 from src.modules import *
 import src.helpers as helpers
 
@@ -26,14 +27,24 @@ def fill_blanks(x, y):
 
 
 
-def rm_exp_reg(x, a, b, l):
-    p_norm = [0] * l
-    for i in range(l):
-        p_norm[i] = x[i] - helpers.exponential_func(i, a, b)
+def rm_exp_reg(p, a, b, length):
+    p_norm = [0] * length
+    for i in range(length):
+        # p_norm[i] = x[i] - helpers.exponential_func(i, a, b)
+        p_actual = p[i]
+        p_expected = helpers.exponential_func(i, a, b)
+        result = 100 * (p_actual - p_expected) / p_expected
+        p_norm[i] = float(round( result, 3))
     return p_norm
     
 
+def forecast_p_norm(p_norm, length, _lags=5, horizon=10):
 
+    model = AutoReg(p_norm, lags=_lags).fit()
+
+    forecast = model.predict(start=length, end=length+horizon-1)
+
+    return forecast
 
 
 

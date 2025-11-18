@@ -19,12 +19,19 @@ SHOW_PLOT = True
 WINDOW_SIZE_LOWER = 50
 WINDOW_SIZE_UPPER = 200
 
+# ANALYSIS
+ARP_LAG = 1000
+ARP_HORIZON = 200
+
 # Colors
 COLOR_OSEBX = "#f7a44a"
 COLOR_OSEBX_NORM = "#f7a44a"
 COLOR_EXP_FUNC = "#aa49e6"
 COLOR_MA_LO = "#b47516"
 COLOR_MA_HI = "#f00b0b"
+
+ANSI_COLOR_GREEN = "\033[32m"
+ANSI_COLOR_RESET = "\033[0m"
 
 
 # From old project --------------------------------------------
