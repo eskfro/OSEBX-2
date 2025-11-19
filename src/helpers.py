@@ -30,11 +30,25 @@ COLOR_EXP_FUNC = "#aa49e6"
 COLOR_MA_LO = "#b47516"
 COLOR_MA_HI = "#f00b0b"
 
+ANSI_COLOR_RED = "\033[31m"
 ANSI_COLOR_GREEN = "\033[32m"
+ANSI_COLOR_BLUE = "\033[34m"
+ANSI_COLOR_WHITE = "\033[37m"
 ANSI_COLOR_RESET = "\033[0m"
 
 
 # From old project --------------------------------------------
+
+def get_colored_string(text, color):
+    if color == "RED":
+        ansi_color = ANSI_COLOR_RED 
+    elif color == "GREEN":
+         ansi_color = ANSI_COLOR_GREEN
+    else:
+         ansi_color = ANSI_COLOR_WHITE
+
+    return ansi_color + text + ANSI_COLOR_RESET
+     
 
 def get_today_date():
     today_date = datetime.today()

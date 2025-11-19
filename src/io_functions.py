@@ -111,13 +111,17 @@ def print_result(price, a, b, status):
     if ratio >  0.03:        advice = "Strong buy" 
 
     # Status strings
-    if (status["n_full"]): nfs = "True"
-    else: nfs = "False"
-    if (status["is_updated"]): ius = "True"
-    else: ius = "False" 
+    if (status["n_full"]): 
+        nf = helpers.get_colored_string("True", "GREEN")
+    else: 
+        nf = helpers.get_colored_string("False", "RED")
 
-    nf = helpers.ANSI_COLOR_GREEN + nfs + helpers.ANSI_COLOR_RESET
-    iu = helpers.ANSI_COLOR_GREEN + ius + helpers.ANSI_COLOR_RESET
+    if (status["is_updated"]): 
+        iu = helpers.get_colored_string("True", "GREEN")
+    else: 
+        iu = helpers.get_colored_string("False", "RED")
+
+
 
     print_delay()
     print_line()
