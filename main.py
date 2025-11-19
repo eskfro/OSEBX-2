@@ -58,7 +58,21 @@ def main():
         # Do analysis on the data
         a, b = analysis.exponential_regression(n, p)
         p_norm = analysis.rm_exp_reg(p, a, b, length)
-        p_norm_f = analysis.forecast_p_norm(p_norm, length, _lags=helpers.ARP_LAG, horizon=helpers.ARP_HORIZON)
+
+        # ARP
+        p_norm_f_arp = analysis.forecast_p_norm_arp(p_norm, length, _lags=helpers.ARP_LAG, horizon=helpers.ARP_HORIZON)
+
+        # Chat code
+        p_norm_f_ma = analysis.forecast_p_norm_ma(p_norm, length, window=helpers.MA_WINDOW, horizon=helpers.ARP_HORIZON)
+        p_norm_f_ema = analysis.forecast_p_norm_ema(p_norm, length, alpha=helpers.EMA_ALPHA, horizon=helpers.ARP_HORIZON)
+        p_norm_f_sea = analysis.forecast_p_norm_seasonal(n, p_norm, horizon=helpers.ARP_HORIZON, period=helpers.PERIOD_SEASONAL)
+
+        p_norm_forecasts = {
+            "arp" : p_norm_f_arp,
+            "ma" : p_norm_f_ma,
+            "ema" : p_norm_f_ema,
+            "sea" : p_norm_f_sea
+        }
 
         n_f_start = n[-1] + 1
         n_f_end = n_f_start + helpers.ARP_HORIZON
@@ -66,7 +80,7 @@ def main():
 
 
         # Plot
-        io_functions.plotter(n, p, p_norm, n_f, p_norm_f, Px=helpers.days_since_start(), Py=p_today, a=a, b=b)
+        io_functions.plotter(n, p, p_norm, n_f, p_norm_forecasts, Px=helpers.days_since_start(), Py=p_today, length=length, a=a, b=b)
         io_functions.print_result(p_today, a, b, status)
 
         count += 1

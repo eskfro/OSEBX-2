@@ -37,15 +37,50 @@ def rm_exp_reg(p, a, b, length):
         p_norm[i] = float(round( result, 3))
     return p_norm
     
-
-def forecast_p_norm(p_norm, length, _lags=5, horizon=10):
-
+# ARP model
+def forecast_p_norm_arp(p_norm, length, _lags=5, horizon=10):
     model = AutoReg(p_norm, lags=_lags).fit()
-
     forecast = model.predict(start=length, end=length+horizon-1)
-
     return forecast
 
+
+
+def forecast_p_norm_ma(p_norm, length, window=20, horizon=10):
+    """
+    Forecast p_norm using mean of last `window` values.
+    """
+    last = p_norm[-window:]
+    mean_val = np.mean(last)
+    return np.array([mean_val] * horizon).tolist()
+
+
+def forecast_p_norm_ema(p_norm, length, alpha=0.2, horizon=10):
+    """
+    Forecast p_norm by exponential moving average.
+    """
+    ema = p_norm[0]
+    for x in p_norm:
+        ema = alpha * x + (1 - alpha) * ema
+    return np.array([ema] * horizon).tolist()
+
+
+def forecast_p_norm_seasonal(n, p_norm, horizon=10, period=5):
+    """
+    Forecast using seasonal average over last several cycles. 
+    """
+    forecasts = []
+    for h in range(horizon):
+        target_pos = (len(n) + h) % period
+
+        # collect history of same weekday
+        vals = [p_norm[i] for i in range(len(p_norm)) if i % period == target_pos]
+
+        if len(vals) == 0:
+            forecasts.append(0)
+        else:
+            forecasts.append(np.mean(vals))
+
+    return np.array(forecasts)
 
 
 # LITT FOR KOMPLISERT

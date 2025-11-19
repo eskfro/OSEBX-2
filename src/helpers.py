@@ -21,7 +21,11 @@ WINDOW_SIZE_UPPER = 200
 
 # ANALYSIS
 ARP_LAG = 1000
-ARP_HORIZON = 200
+ARP_HORIZON = 100
+
+MA_WINDOW = 200
+EMA_ALPHA = 0.9
+PERIOD_SEASONAL = 1000
 
 # Colors
 COLOR_OSEBX = "#f7a44a"
@@ -36,19 +40,17 @@ ANSI_COLOR_BLUE = "\033[34m"
 ANSI_COLOR_WHITE = "\033[37m"
 ANSI_COLOR_RESET = "\033[0m"
 
+ANSI_TRANSLATOR = {
+     "RED" : ANSI_COLOR_RED,
+     "GREEN" : ANSI_COLOR_GREEN,
+     "BLUE" : ANSI_COLOR_BLUE,
+     "WHITE" : ANSI_COLOR_WHITE
+}
 
-# From old project --------------------------------------------
 
 def get_colored_string(text, color):
-    if color == "RED":
-        ansi_color = ANSI_COLOR_RED 
-    elif color == "GREEN":
-         ansi_color = ANSI_COLOR_GREEN
-    else:
-         ansi_color = ANSI_COLOR_WHITE
+    return ANSI_TRANSLATOR[color] + text + ANSI_COLOR_RESET
 
-    return ansi_color + text + ANSI_COLOR_RESET
-     
 
 def get_today_date():
     today_date = datetime.today()
