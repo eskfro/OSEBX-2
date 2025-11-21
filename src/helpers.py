@@ -5,6 +5,7 @@ from src.modules import *
 FOLDER_OSEBX = "data_osebx/"
 FOLDER_SP500 = "data_sp500/"
 START_DATE = datetime(2014, 5, 7)
+START_DATE_SP = datetime(2014, 7, 8)
 N_CONT_TIME = 5000
 
 # IO stuff
@@ -20,12 +21,12 @@ WINDOW_SIZE_LOWER = 50
 WINDOW_SIZE_UPPER = 200
 
 # ANALYSIS
-ARP_LAG = 1000
-ARP_HORIZON = 100
+ARP_LAG = 1500
+ARP_HORIZON = 1000
 
 MA_WINDOW = 200
 EMA_ALPHA = 0.9
-PERIOD_SEASONAL = 1000
+PERIOD_SEASONAL = 1200
 
 # Colors
 COLOR_OSEBX = "#f7a44a"
@@ -60,11 +61,8 @@ def get_today_date():
 def exponential_func(x, a, b):
         return a * np.exp(b * x)
 
-def days_since_start():
-    return (datetime.now() - START_DATE).days
-
-def date_to_n(date_type):
+def date_to_n(date_type, start_date):
     if isinstance(date_type, str):
         date_type = datetime.strptime(date_type, "%d.%m.%Y")
     # this will be n in the array
-    return (date_type - START_DATE).days
+    return (date_type - start_date).days

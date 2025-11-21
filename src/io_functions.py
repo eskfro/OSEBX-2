@@ -39,12 +39,25 @@ def inputter():
 
 
 
-def plotter(n, p, p_norm, n_f, p_norm_forecasts, Px=100, Py=100, length=0, a=0.5, b=2):
+def plotter(n, p, p_norm, n_f, p_forecasts, p_norm_forecasts, 
+            mas, Px=100, Py=100, length=0, a=0.5, b=2):
 
     p_norm_f_arp = p_norm_forecasts["arp"]
     p_norm_f_ma = p_norm_forecasts["ma"]
     p_norm_f_ema = p_norm_forecasts["ema"]
     p_norm_f_sea = p_norm_forecasts["sea"]
+
+    p_f_arp = p_forecasts["arp"]
+    p_f_ma = p_forecasts["ma"]
+    p_f_ema = p_forecasts["ema"]
+    p_f_sea = p_forecasts["sea"]
+
+    n_ma_lo = mas["n_ma_lo"]
+    n_ma_hi = mas["n_ma_hi"]
+    ma_lo_norm = mas["ma_lo_norm"]
+    ma_hi_norm = mas["ma_hi_norm"]
+    ma_lo = mas["ma_lo"]
+    ma_hi = mas["ma_hi"]
 
 
     # Time cont. time
@@ -58,43 +71,6 @@ def plotter(n, p, p_norm, n_f, p_norm_forecasts, Px=100, Py=100, length=0, a=0.5
     )
     fig.set_size_inches((10, 8))
 
-    # MA calculations
-
-    ma_lo_norm = analysis.get_moving_average(helpers.WINDOW_SIZE_LOWER, p_norm)
-    ma_hi_norm = analysis.get_moving_average(helpers.WINDOW_SIZE_UPPER, p_norm)
-
-    ma_lo = [0] * (length - helpers.WINDOW_SIZE_LOWER) 
-    ma_hi = [0] * (length - helpers.WINDOW_SIZE_UPPER)
-
-    for i in range(length - helpers.WINDOW_SIZE_LOWER):
-        idx = helpers.WINDOW_SIZE_LOWER + i
-        p_e = helpers.exponential_func(idx, a, b)
-        ma_lo[i] = p_e * (1 + ma_lo_norm[i]/100)
-        
-    for i in range(length - helpers.WINDOW_SIZE_UPPER):
-        idx = helpers.WINDOW_SIZE_UPPER + i
-        p_e = helpers.exponential_func(idx, a, b)
-        ma_hi[i] = p_e * (1 + ma_hi_norm[i]/100)
-
-    n_ma_lo = n[helpers.WINDOW_SIZE_LOWER::1]
-    n_ma_hi = n[helpers.WINDOW_SIZE_UPPER::1]
-
-    # Mapping forecast to axs[0]
-    length_f = helpers.ARP_HORIZON
-    p_f_arp = [0] * length_f
-    p_f_ma = [0] * length_f
-    p_f_ema = [0] * length_f
-    p_f_sea = [0] * length_f
-
-    for i in range(length_f):
-        idx = n[-1] + 1 + i
-        p_e = helpers.exponential_func(idx, a, b)
-        p_f_arp[i] = p_e * (1 + p_norm_f_arp[i]/100) 
-        p_f_ma[i] = p_e * (1 + p_norm_f_ma[i]/100) 
-        p_f_ema[i] = p_e * (1 + p_norm_f_ema[i]/100) 
-        p_f_sea[i] = p_e * (1 + p_norm_f_sea[i]/100) 
-
-
     # Growth plot
     axs[0].plot(n, p, color=helpers.COLOR_OSEBX, label="OSEBX Index")
     axs[0].scatter(Px, Py, color="red", label="Today")
@@ -106,32 +82,37 @@ def plotter(n, p, p_norm, n_f, p_norm_forecasts, Px=100, Py=100, length=0, a=0.5
     axs[0].plot(n_ma_hi, ma_hi, label=f"MA {helpers.WINDOW_SIZE_UPPER}", color=helpers.COLOR_MA_HI)
 
     # Plot forecasts
-    axs[0].plot(n_f, p_f_arp)
-    axs[0].plot(n_f, p_f_ma)
-    axs[0].plot(n_f, p_f_ema)
-    axs[0].plot(n_f, p_f_sea)
+    axs[0].plot(n_f, p_f_arp, label="ARP")
+    #axs[0].plot(n_f, p_f_ma, label="MA")
+    #axs[0].plot(n_f, p_f_ema, label="EMA")
+    axs[0].plot(n_f, p_f_sea, label="SEASONAL")
 
 
 
     Py_norm = 100 * (Py-helpers.exponential_func(Px, a, b)) / helpers.exponential_func(Px, a, b)
     # Normalized plot
-    axs[1].plot(n, p_norm, label="Price Normalized", color=helpers.COLOR_OSEBX_NORM)
-    axs[1].scatter(Px, Py_norm, color="red")
+    axs[1].plot(n, p_norm, label="OSEBX Index Normalized", color=helpers.COLOR_OSEBX_NORM)
+    axs[1].scatter(Px, Py_norm, color="red", label="Today")
     axs[1].axhline(0, color=helpers.COLOR_EXP_FUNC , linewidth="1.2")
     axs[1].plot(n_ma_lo, ma_lo_norm, label=f"MA {helpers.WINDOW_SIZE_LOWER}", color=helpers.COLOR_MA_LO)
     axs[1].plot(n_ma_hi, ma_hi_norm, label=f"MA {helpers.WINDOW_SIZE_UPPER}", color=helpers.COLOR_MA_HI)
 
     # Plot normalized forecasts
-    axs[1].plot(n_f, p_norm_f_arp)
-    axs[1].plot(n_f, p_norm_f_ma)
-    axs[1].plot(n_f, p_norm_f_ema)
-    axs[1].plot(n_f, p_norm_f_sea)
-
-    axs[0].set_xlim([4000, 4500])
-    axs[1].set_xlim([4000, 4500])
-
-    axs[0].set_ylim([1400, 1800])
-    axs[1].set_ylim([-10, 10])
+    axs[1].plot(n_f, p_norm_f_arp, label="ARP")
+    #axs[1].plot(n_f, p_norm_f_ma, label="MA")
+    #axs[1].plot(n_f, p_norm_f_ema, label="EMA")
+    axs[1].plot(n_f, p_norm_f_sea, label="SEASONAL")
+    
+    # X-Y limits
+    scaler = 2
+    dx = int( 300 )         * scaler
+    dy = int( Py * 0.1 )    * scaler
+    axs[0].set_xlim([Px-dx, Px+dx])
+    axs[0].set_ylim([Py-dy, Py+dy])
+    axs[0].legend()
+    axs[1].set_xlim([Px-dx, Px+dx])
+    axs[1].set_ylim([-25, 25])
+    axs[1].legend()
 
     plt.grid(helpers.SHOW_GRID)
     if helpers.SHOW_PLOT: plt.show()
@@ -144,9 +125,9 @@ def print_message(message):
      print()
 
 
-def print_result(price, a, b, status):
+def print_result(price, a, b, status, start_date):
 
-    day = helpers.date_to_n( helpers.get_today_date() )
+    day = helpers.date_to_n(helpers.get_today_date(), start_date)
     expected_price = helpers.exponential_func(day, a, b)
     ratio = round((expected_price - price) / expected_price, 5)
 
@@ -186,7 +167,7 @@ def print_result(price, a, b, status):
 def print_ui():
     #ui print
     print_line()
-    print_delay("Syntax        | Function" + " "*(helpers.CONSOLE_WIDTH-35)+f"Day: {helpers.days_since_start()}")
+    print_delay("Syntax        | Function" + " "*(helpers.CONSOLE_WIDTH-35))
     print_line()
     print_delay("10 price      : OSEBX")
     print_delay("50 price      : SP 500")
