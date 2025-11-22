@@ -18,7 +18,7 @@ def main():
     while(1 and count < 1):
 
         # Get input from user
-        if 0:
+        if 1:
             mode, p_today = io_functions.inputter()
         elif 1:
             mode, p_today = 10, 1600
@@ -50,7 +50,7 @@ def main():
 
         # Read data from file
         n, p, length = reader.read(file, start_date) 
-        modules.pprint.pprint(n[0:101]) 
+        # modules.pprint.pprint(n[0:101]) 
 
         # modules.pprint.pprint(p[:-11:-1])
 
