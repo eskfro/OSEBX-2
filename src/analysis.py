@@ -17,7 +17,7 @@ def exponential_regression(x, y):
     a, b = popt
     return a, b
 
-
+# Fill weekends with linear interpolation (bad)
 def fill_blanks(x, y):
     l = x[-1] + 1
     x, y = np.array(x), np.array(y)
@@ -25,8 +25,31 @@ def fill_blanks(x, y):
     p_interp = np.interp(x_interp, x, y)
     return x_interp, p_interp
 
+# Fill forward the last value (better)
+def forward_fill(n, p):
+    start = n[0]
+    end = n[-1]
 
+    length = end - start + 1
 
+    n_vals = list(range(start, end + 1))
+    p_vals = [0] * length
+
+    # Fill in known values
+    for idx, element in enumerate(n):
+        p_vals[element - start] = p[idx]
+
+    last_value = None
+    for i in range(length):
+        if p_vals[i] != 0:
+            last_value = p_vals[i]
+        else:
+            if last_value is not None:
+                p_vals[i] = last_value
+
+    return n_vals, p_vals
+
+    
 def rm_exp_reg(p, a, b, length):
     p_norm = [0] * length
     for i in range(length):

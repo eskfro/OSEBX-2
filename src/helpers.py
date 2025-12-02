@@ -2,8 +2,8 @@ from src.modules import *
 
 # Constants --------------------------------------------------
 
-FOLDER_OSEBX = "data_osebx/"
-FOLDER_SP500 = "data_sp500/"
+FOLDER_OSEBX = "C:\\Users\\eskfr\\OSEBX-2\\data_osebx"
+FOLDER_SP500 =  "C:\\Users\\eskfr\\OSEBX-2\\data_sp500"
 START_DATE = datetime(2014, 5, 7)
 START_DATE_SP = datetime(2014, 7, 8)
 N_CONT_TIME = 5000
@@ -21,8 +21,8 @@ WINDOW_SIZE_LOWER = 50
 WINDOW_SIZE_UPPER = 200
 
 # ANALYSIS
-ARP_LAG = 1500
-ARP_HORIZON = 1000
+ARP_LAG = 420
+ARP_HORIZON = 1200
 
 MA_WINDOW = 200
 EMA_ALPHA = 0.9

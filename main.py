@@ -15,7 +15,7 @@ def main():
     io_functions.startup()
     count = 0
 
-    while(1 and count < 1):
+    while(1 and count < 100):
 
         # Get input from user
         if 1:
@@ -50,9 +50,8 @@ def main():
 
         # Read data from file
         n, p, length = reader.read(file, start_date) 
-        # modules.pprint.pprint(n[0:101]) 
-
-        # modules.pprint.pprint(p[:-11:-1])
+        #modules.pprint.pprint(n[0:101]) 
+        #modules.pprint.pprint(p[0:101])
 
 
         # Update the status dictionary
@@ -109,9 +108,28 @@ def main():
 
 
         # Group data to be plotted
-        p_norm_forecasts = {"arp" : p_norm_f_arp, "ma" : p_norm_f_ma, "ema" : p_norm_f_ema, "sea" : p_norm_f_sea }
-        p_forecasts = {"arp" : p_f_arp, "ma" : p_f_ma, "ema" : p_f_ema, "sea" : p_f_sea }
-        mas = {"n_ma_lo" : n_ma_lo, "n_ma_hi" : n_ma_hi, "ma_lo_norm" : ma_lo_norm, "ma_hi_norm" : ma_hi_norm, "ma_lo" : ma_lo, "ma_hi" : ma_hi}
+        p_norm_forecasts = {
+            "arp" : p_norm_f_arp, 
+            "ma" : p_norm_f_ma, 
+            "ema" : p_norm_f_ema, 
+            "sea" : p_norm_f_sea 
+        }
+        
+        p_forecasts = {
+            "arp" : p_f_arp, 
+            "ma" : p_f_ma, 
+            "ema" : p_f_ema, 
+            "sea" : p_f_sea 
+        }
+
+        mas = {
+            "n_ma_lo" : n_ma_lo, 
+            "n_ma_hi" : n_ma_hi, 
+            "ma_lo_norm" : ma_lo_norm, 
+            "ma_hi_norm" : ma_hi_norm, 
+            "ma_lo" : ma_lo, 
+            "ma_hi" : ma_hi
+        }
 
 
         # Calculate forecast timeseries
@@ -121,7 +139,8 @@ def main():
 
 
         # Plot / IO
-        io_functions.plotter(n, p, p_norm, n_f, 
+        io_functions.plotter(n, n_f, 
+                             p, p_norm, 
                              p_forecasts, p_norm_forecasts, 
                              mas, 
                              Px=helpers.date_to_n(helpers.get_today_date(), start_date), 
@@ -133,7 +152,8 @@ def main():
 
         count += 1
 
-main()
+if __name__ == "__main__":
+    main()
 
 
 

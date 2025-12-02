@@ -16,16 +16,18 @@ def read(folder, start_date):
         if file.name == r"test.txt":
             continue
 
-        data = np.loadtxt(file, dtype=str)
+        #data = np.loadtxt(file, dtype=str)
+        data = np.genfromtxt(file, dtype=str)
+
         datavec.append(data)
     
     # Step 1 -> make timeseries
     clean_datavec = []
     for data in datavec:
         clean_data = []
-        for idx, row in enumerate(data):
-            n_value = helpers.date_to_n(row[0], start_date)
-            p_value = float(row[4])
+        for idx, col in enumerate(data):
+            n_value = helpers.date_to_n(col[0], start_date)
+            p_value = float(col[4])
             clean_data.append( [n_value, p_value] )
         clean_datavec.append(clean_data)
 
@@ -34,12 +36,13 @@ def read(folder, start_date):
     for data in clean_datavec:
         n_vals, p_vals = zip(*data) 
         n_vals, p_vals = n_vals[::-1], p_vals[::-1] 
-        n_vals, p_vals = analysis.fill_blanks(n_vals, p_vals)
+        #n_vals, p_vals = analysis.fill_blanks(n_vals, p_vals)
+        n_vals, p_vals = analysis.forward_fill(n_vals, p_vals)
         temp_datavec.append([n_vals, p_vals])
 
     L = helpers.date_to_n(helpers.get_today_date(), start_date)
     n = list( range(L) )
-    p = [0] * L
+    p = [None] * L
 
     # Step 3 -> combine all data, data = [ [n1, p1], [n2, p2], ... etc ]
     for data in temp_datavec: 
@@ -48,15 +51,14 @@ def read(folder, start_date):
         l = len(n_vals)
         
         for i in range(l):
-            if p[ n_vals[i] ] == 0:
+            if p[ n_vals[i] ] == None:
                 p[ n_vals[i] ] = float( p_vals[i] )
     
-    # Remove potential zeros at the end of the price array
-    for di in reversed(range(L)):
-        if(p[di] == 0):
-            p.pop(di)
-            n.pop(di)
-    
+    # Remove potential Nones at the end of the price array
+    while p and p[-1] == None:
+        p.pop()
+        n.pop()
+
     
     length = len(n)
 

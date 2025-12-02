@@ -39,7 +39,7 @@ def inputter():
 
 
 
-def plotter(n, p, p_norm, n_f, p_forecasts, p_norm_forecasts, 
+def plotter(n, n_f, p, p_norm, p_forecasts, p_norm_forecasts, 
             mas, Px=100, Py=100, length=0, a=0.5, b=2):
 
     p_norm_f_arp = p_norm_forecasts["arp"]
@@ -59,6 +59,8 @@ def plotter(n, p, p_norm, n_f, p_forecasts, p_norm_forecasts,
     ma_lo = mas["ma_lo"]
     ma_hi = mas["ma_hi"]
 
+    r_day = np.exp(b) - 1
+    r_year = (1 + r_day)**365 - 1
 
     # Time cont. time
     t = np.linspace(0, helpers.N_CONT_TIME, helpers.N_CONT_TIME+1)
@@ -70,8 +72,10 @@ def plotter(n, p, p_norm, n_f, p_forecasts, p_norm_forecasts,
         gridspec_kw={'height_ratios': [5, 5]}
     )
     fig.set_size_inches((10, 8))
+    
 
     # Growth plot
+    axs[0].set_title("Yearly growth: " + f"{round(r_year * 100, 2)}" + " %")
     axs[0].plot(n, p, color=helpers.COLOR_OSEBX, label="OSEBX Index")
     axs[0].scatter(Px, Py, color="red", label="Today")
     axs[0].grid(helpers.SHOW_GRID)
@@ -85,7 +89,7 @@ def plotter(n, p, p_norm, n_f, p_forecasts, p_norm_forecasts,
     axs[0].plot(n_f, p_f_arp, label="ARP")
     #axs[0].plot(n_f, p_f_ma, label="MA")
     #axs[0].plot(n_f, p_f_ema, label="EMA")
-    axs[0].plot(n_f, p_f_sea, label="SEASONAL")
+    #axs[0].plot(n_f, p_f_sea, label="SEASONAL")
 
 
 
@@ -101,7 +105,7 @@ def plotter(n, p, p_norm, n_f, p_forecasts, p_norm_forecasts,
     axs[1].plot(n_f, p_norm_f_arp, label="ARP")
     #axs[1].plot(n_f, p_norm_f_ma, label="MA")
     #axs[1].plot(n_f, p_norm_f_ema, label="EMA")
-    axs[1].plot(n_f, p_norm_f_sea, label="SEASONAL")
+    #axs[1].plot(n_f, p_norm_f_sea, label="SEASONAL")
     
     # X-Y limits
     scaler = 2
