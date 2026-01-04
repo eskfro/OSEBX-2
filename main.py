@@ -2,6 +2,7 @@ import src.reader as reader
 import src.helpers as helpers
 import src.io_functions as io_functions
 import src.analysis as analysis
+import src.config as config
 from src.DO import DataObject
 
 DEV = 1
@@ -35,21 +36,16 @@ def main():
             count += 1
             continue    
 
-        # Config selector
-        configs = {
-            10 : (helpers.FOLDER_OSEBX, helpers.START_DATE, helpers.DISP_NAME),
-            50 : (helpers.FOLDER_SP500, helpers.START_DATE_SP, helpers.DISP_NAME_SP)
-        }
-        config = configs[mode]
         
-        file, start_date, disp_name = config
+        # Mode dependant configs
+        file, start_date, disp_name = config.CONFIGS[mode]
         
         # Read data from file
         n, p, length = reader.read(file, start_date) 
 
         # Init data object
         do = DataObject(n, p, length, status)
-        do.integral_indicator_constants = (365//2, 365, int(1.5*365), 2*365)
+        do.integral_indicator_constants = (365//2, 365, 365+365//2, 2*365)
         do.start_date = start_date
         do.disp_name= disp_name
         do.Px = helpers.date_to_n(helpers.get_today_date(), start_date)

@@ -2,12 +2,7 @@ from src.modules import *
 
 # Constants --------------------------------------------------
 
-FOLDER_OSEBX = "C:\\Users\\eskfr\\OSEBX-2\\data_osebx"
-FOLDER_SP500 =  "C:\\Users\\eskfr\\OSEBX-2\\data_sp500"
-START_DATE = datetime(2014, 5, 7)
-START_DATE_SP = datetime(2014, 7, 8)
-DISP_NAME = "OSEBX"
-DISP_NAME_SP = "SP-500"
+
 N_CONT_TIME = 5000
 
 # IO stuff
