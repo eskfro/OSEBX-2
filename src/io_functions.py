@@ -45,6 +45,12 @@ def print_message(message):
      print()
 
 
+def add_element_to_centered_strings(w, string_list, string_to_add):
+    string_list.append(string_to_add + get_spacing_string(w, string_to_add))
+
+def get_spacing_string(w, string):
+    res = " " * (w - len(string))
+    return res
 
 
 def print_ui():

@@ -7,13 +7,16 @@ import matplotlib.pyplot as plt
 
 class DataObject:
     def __init__(self, _n, _p, _length, _status):
+        # Main arrays
         self.n = _n
         self.p = _p
+        self.p_norm = None
         self.length = _length
         self.status = _status
 
         # Other constants
         self.start_date = None
+        self.disp_name = None
         self.length_f = helpers.ARP_HORIZON
         self.a = None
         self.b = None
@@ -45,12 +48,63 @@ class DataObject:
         self.n_f_end = None
         self.n_f = None
 
+        # Indicator list
+        self.indicators = []
+        self.integral_indicator_constants = None
+
+    def int_indicator(self, numPastValues):
+        N = numPastValues
+        if len(self.p_norm) < N:
+            return None
+        
+        pastValues = self.p_norm[-N:]
+
+        integral = sum(pastValues)
+        integral_avg = integral / numPastValues
+        
+        if integral > 0:
+            return True, integral_avg
+        else:
+            return False, integral_avg
+
+    def create_integral_indicators(self):
+        for n in self.integral_indicator_constants:
+            color = ""
+            dispString = ""
+            res, integral = self.int_indicator(n)
+
+            if res is None:
+                continue
+            
+            if res == False:
+                color = "GREEN"
+                dispString = "below"
+            else:
+                color = "RED"
+                dispString = "above"
+
+            ind = Indicator(f"int-{n}", dispString, 0.2, color, integral)
+            self.indicators.append(ind)
+
+    def create_other_indicators(self):
+        # Indicators to be added
+        currentPriceBelowMean = False
+        color = "RED"
+        dispString = "above"
+        if self.p_norm[-1] < 0:
+            currentPriceBelowMean = True
+            color = "GREEN"
+            dispString = "below"
+        ind = Indicator("expectation", dispString, 0.2, color, None)
+
+        self.indicators.append(ind)
+        
 
 
     def analyze(self):
         # Update the status dictionary
         self.status["n_full"] = self.n[-1] == self.length - 1
-        self.status["is_updated"] = helpers.date_to_n(helpers.get_today_date(), self.start_date) - 1 in self.n
+        self.status["is_updated"] = helpers.date_to_n(helpers.get_today_date(), self.start_date) - 3 in self.n
         
         self.a, self.b = analysis.exponential_regression(self.n, self.p)
         self.p_norm = analysis.rm_exp_reg(self.p, self.a, self.b, self.length)
@@ -112,7 +166,7 @@ class DataObject:
 
         # Growth plot
         axs[0].set_title("Yearly growth: " + f"{round(r_year * 100, 2)}" + " %")
-        axs[0].plot(self.n, self.p, color=helpers.COLOR_OSEBX, label="OSEBX Index")
+        axs[0].plot(self.n, self.p, color=helpers.COLOR_OSEBX, label=self.disp_name+" Index")
         axs[0].scatter(self.Px, self.Py, color="red", label="Today")
         axs[0].grid(helpers.SHOW_GRID)
         axs[0].plot(t, helpers.exponential_func(t, self.a, self.b), color=helpers.COLOR_EXP_FUNC, label="Mean")
@@ -131,7 +185,7 @@ class DataObject:
             helpers.exponential_func(self.Px, self.a, self.b)
         
         # Normalized plot
-        axs[1].plot(self.n, self.p_norm, label="OSEBX Index Normalized", color=helpers.COLOR_OSEBX_NORM)
+        axs[1].plot(self.n, self.p_norm, label=self.disp_name +" Index Normalized", color=helpers.COLOR_OSEBX_NORM)
         axs[1].scatter(self.Px, Py_norm, color="red", label="Today")
         axs[1].axhline(0, color=helpers.COLOR_EXP_FUNC , linewidth="1.2")
         axs[1].plot(self.n_ma_lo, self.ma_lo_norm, label=f"MA {helpers.WINDOW_SIZE_LOWER}", color=helpers.COLOR_MA_LO)
@@ -142,6 +196,11 @@ class DataObject:
         #axs[1].plot(n_f, p_norm_f_ma, label="MA")
         #axs[1].plot(n_f, p_norm_f_ema, label="EMA")
         #axs[1].plot(n_f, p_norm_f_sea, label="SEASONAL")
+
+        # Plot integral indicator y-lines
+        for integer in self.integral_indicator_constants:
+            PosX = self.n[-1] - integer
+            axs[1].axvline(PosX, color="blue", label=f"int-{integer}", linewidth=0.7)
         
         # X-Y limits
         scaler = 2
@@ -161,19 +220,13 @@ class DataObject:
         
             
             
-    def printResults(self):
+    def print_results(self):
        
         day = helpers.date_to_n(helpers.get_today_date(), self.start_date)
         expected_price = helpers.exponential_func(day, self.a, self.b)
         ratio = round((expected_price - self.Py) / expected_price, 5)
 
-        # Determine advice
-        advice = "None"
-        if -0.01 < ratio < 0.01: advice = "Neutral"
-        if ratio < -0.01:        advice = "Sell"
-        if ratio < -0.03:        advice = "Strong sell" 
-        if ratio >  0.01:        advice = "Buy"
-        if ratio >  0.03:        advice = "Strong buy" 
+         
 
         # Status strings
         if (self.status["n_full"]): 
@@ -186,21 +239,86 @@ class DataObject:
         else: 
             iu = helpers.get_colored_string("False", "RED")
 
-
-        io_functions.print_delay()
         io_functions.print_line()
-        io_functions.print_delay(f"Results                                               n_full = {nf}          is_updated = {iu}")
+        io_functions.print_delay(helpers.get_colored_string("Status List", "MAGENTA"))
+        io_functions.print_line()
+        io_functions.print_delay(f"->   n_full = {nf},   is_updated = {iu}")
+        io_functions.print_line()
+        io_functions.print_delay(helpers.get_colored_string("Price Difference", "MAGENTA"))
         io_functions.print_line()
         io_functions.print_delay(f"->   Price             =  {self.Py} ")
         io_functions.print_delay(f"->   Price (expected)  =  {int(expected_price)}")
         io_functions.print_delay(f"->   Difference        =  {round((ratio * -100), 3)} %")
-        io_functions.print_delay(f"->   Advice            =  {advice}")
         io_functions.print_delay()
         io_functions.print_line()
-        io_functions.print_delay()
+        io_functions.print_delay(helpers.get_colored_string("Indicators", "MAGENTA"))
+        io_functions.print_line()
         
 
+        # Print row explanation for indicators
+        w = helpers.COLUMN_WIDTH_INDICATORS
+        re = ["     "]
+        io_functions.add_element_to_centered_strings(w, re, "indicator")
+        io_functions.add_element_to_centered_strings(w, re, "meaning")
+        io_functions.add_element_to_centered_strings(w, re, "weight")
+        io_functions.add_element_to_centered_strings(w, re, "include")
+        io_functions.add_element_to_centered_strings(w, re, "value %")
+        row_explanation = helpers.get_colored_string("".join(re), "YELLOW")
+        io_functions.print_delay(row_explanation)
+
+
+        for ind in self.indicators:
+            if isinstance(ind, Indicator):
+                ind.print_indicator()
+
+
         
+
+class Indicator:
+    def __init__(self, _dispName, _dispString, _weight, _ansiColor, _integral):
+        self.dispName = _dispName
+        self.dispString = _dispString
+        self.weight = _weight
+        self.ansiColor = _ansiColor
+        self.integral = _integral
+
+        
+
+
+    def print_indicator(self):
+
+        def get_spacing_string(w, string):
+            res = " " * (w - len(string))
+            return res
+
+        integral_string = " "
+        try: 
+            integral_string = f"{self.integral:.2f}"
+        except Exception:
+            integral_string = "na"
+
+        ansiColor = self.ansiColor
+        res = ""
+        coloredDispString = helpers.get_colored_string(self.dispString, ansiColor)
+        
+        if self.ansiColor == "GREEN": advice = "1"
+        else: advice = "0"
+        
+        # Column Width 
+        w = helpers.COLUMN_WIDTH_INDICATORS
+        
+        # Creates a nice pattern depending on width w
+        res += "->   "
+        res += self.dispName + get_spacing_string(w, self.dispName)
+        res += coloredDispString + get_spacing_string(w, self.dispString)
+        res += str(round(self.weight, 2)) + get_spacing_string(w, str(round(self.weight, 2)))
+        res += advice + get_spacing_string(w, advice)
+        res += integral_string + get_spacing_string(w, integral_string)
+
+        # Output
+        io_functions.print_delay(res)
+
+
         
         
 
