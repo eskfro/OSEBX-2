@@ -1,4 +1,3 @@
-import src.reader as reader
 import src.helpers as helpers
 import src.io_functions as io_functions
 import src.analysis as analysis
@@ -88,14 +87,15 @@ class DataObject:
 
     def create_other_indicators(self):
         # Indicators to be added
-        currentPriceBelowMean = False
+        current_price = self.p_norm[-1]
+
         color = "RED"
         dispString = "above"
-        if self.p_norm[-1] < 0:
-            currentPriceBelowMean = True
+        if current_price < 0:
             color = "GREEN"
             dispString = "below"
-        ind = Indicator("expectation", dispString, 0.2, color, None)
+
+        ind = Indicator("expectation", dispString, 0.2, color, current_price)
 
         self.indicators.append(ind)
         
@@ -255,7 +255,7 @@ class DataObject:
         io_functions.print_line()
         
 
-        # Print row explanation for indicators
+        # Print column header for indicators
         w = helpers.COLUMN_WIDTH_INDICATORS
         re = ["     "]
         io_functions.add_element_to_centered_strings(w, re, "indicator")
@@ -263,10 +263,10 @@ class DataObject:
         io_functions.add_element_to_centered_strings(w, re, "weight")
         io_functions.add_element_to_centered_strings(w, re, "include")
         io_functions.add_element_to_centered_strings(w, re, "value %")
-        row_explanation = helpers.get_colored_string("".join(re), "YELLOW")
-        io_functions.print_delay(row_explanation)
+        column_header = helpers.get_colored_string("".join(re), "YELLOW")
+        io_functions.print_delay(column_header)
 
-
+        # Print indicators from indicator list
         for ind in self.indicators:
             if isinstance(ind, Indicator):
                 ind.print_indicator()

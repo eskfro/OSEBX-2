@@ -1,9 +1,12 @@
-from src.modules import *
+import numpy as np
+from datetime import datetime
+
 
 # Constants --------------------------------------------------
 
 
 N_CONT_TIME = 5000
+N_MAIN_LOOP = 100
 
 # IO stuff
 DELAY = 0.03

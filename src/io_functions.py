@@ -1,6 +1,5 @@
 import src.helpers as helpers
-import src.analysis as analysis
-from src.modules import *
+import time
 
 def startup():
     print_message("osebx.py")

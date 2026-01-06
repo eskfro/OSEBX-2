@@ -1,5 +1,6 @@
 from statsmodels.tsa.ar_model import AutoReg
-from src.modules import *
+import numpy as np
+from scipy.optimize import curve_fit
 import src.helpers as helpers
 
 def get_moving_average(window_size, prices):

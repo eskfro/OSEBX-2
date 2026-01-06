@@ -1,15 +1,14 @@
 import src.reader as reader
 import src.helpers as helpers
 import src.io_functions as io_functions
-import src.analysis as analysis
 import src.config as config
 from src.DO import DataObject
 
-DEV = 1
-N_MAIN_LOOP = 100
+DEV = 0
 
 def main():
-    if DEV: N_MAIN_LOOP = 1
+    N = helpers.N_MAIN_LOOP
+    if DEV: N = 1
 
     # Keep track of program state
     status = {
@@ -20,7 +19,7 @@ def main():
     io_functions.startup()
     count = 0
 
-    while(count < N_MAIN_LOOP):
+    while(count < N):
 
         # Get input from user
         if not DEV:
