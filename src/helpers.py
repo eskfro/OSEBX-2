@@ -1,3 +1,11 @@
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import config
+
+
 import numpy as np
 from datetime import datetime
 
@@ -74,5 +82,24 @@ def date_to_n(date_type, start_date):
     # this will be n in the array
     return (date_type - start_date).days
 
+import os
 
+def get_db_seen_files_metadata():
+    seen_files = set()
+    metadata = config.FOLDER_UPDATE_SOURCE_METADATA
+    if not os.path.exists(metadata):
+        print("Metadata file not found. Aborting update")
+        return
+    with open(metadata, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                seen_files.add(line)
+
+    return seen_files
+     
+def write_db_seen_files_metadata(source_name):
+    metadata = config.FOLDER_UPDATE_SOURCE_METADATA
+    with open(metadata, "a", encoding="utf-8") as f:
+        f.write(source_name + "\n")
      

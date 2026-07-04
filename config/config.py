@@ -15,9 +15,10 @@ DISP_NAME_SP = "SP-500"
 
 FOLDER_OSEBX = FOLDER_USER + "OSEBX-2/data/osebx/"
 FOLDER_SP500 = FOLDER_USER + "OSEBX-2/data/sp500/"
+FOLDER_UPDATE_SOURCE_METADATA = FOLDER_USER + "OSEBX-2/data/db_update_sources.metadata"
 
 # TODO: change the file name after testing is done
-DB_SP500 = FOLDER_USER + "OSEBX-2/data/timeseries_sp500_test.txt"
+DB_SP500 = FOLDER_USER + "OSEBX-2/data/timeseries_sp500.txt"
 
 # Config mapping for the different modes
 CONFIGS = {

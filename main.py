@@ -3,8 +3,9 @@ import src.helpers as helpers
 import src.io_functions as io_functions
 import src.config as config
 from src.dataobject import DataObject
+import src.database as database
 
-DEV = 0
+DEV = 1
 
 def main():
     N = helpers.N_MAIN_LOOP
@@ -25,7 +26,7 @@ def main():
         if not DEV:
             mode, p_today = io_functions.inputter()
         else:
-            mode, p_today = 10, 1700
+            mode, p_today = 50, 7557
             
         # Handle input
         if mode == -1:
@@ -39,8 +40,7 @@ def main():
         # Mode dependant configs
         file, start_date, disp_name = config.CONFIGS[mode]
         
-        # Read data from file
-        n, p, length = legacy_parser.read(file, start_date) 
+        n, p, length = database.get_timeseries()
 
         # Init data object
         do = DataObject(n, p, length, status)
