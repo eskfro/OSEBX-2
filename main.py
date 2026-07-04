@@ -1,17 +1,17 @@
 import src.legacy_parser as legacy_parser
 import src.helpers as helpers
 import src.io_functions as io_functions
-import src.config as config
+import config.config as config
 from src.dataobject import DataObject
 import src.database as database
 
 DEV = 1
 
 def main():
-    N = helpers.N_MAIN_LOOP
+    N = 100
     if DEV: N = 1
 
-    # Keep track of program state
+    # Program state
     status = {
         "n_full" : False, 
         "is_updated": False

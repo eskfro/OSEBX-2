@@ -1,4 +1,8 @@
-import src.helpers as helpers
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import config.config as config
 import time
 
 def startup():
@@ -55,7 +59,7 @@ def get_spacing_string(w, string):
 def print_ui():
     #ui print
     print_line()
-    print_delay("Syntax        | Function" + " "*(helpers.CONSOLE_WIDTH-35))
+    print_delay("Syntax        | Function" + " "*(config.CONSOLE_WIDTH-35))
     print_line()
     print_delay("10 price      : OSEBX")
     print_delay("50 price      : SP 500")
@@ -63,7 +67,7 @@ def print_ui():
     print_delay()
 
 def print_delay(text = ""):
-    time.sleep(helpers.DELAY)
+    time.sleep(config.DELAY)
     print(text)
 
 def get_input(message):
@@ -78,12 +82,12 @@ def print_error(error):
     print()
 
 def print_dotted_lines():
-    for i in range(helpers.VERTICAL_DOT_COUNT):
+    for i in range(config.VERTICAL_DOT_COUNT):
         print("   .")
-        time.sleep(helpers.DELAY)
+        time.sleep(config.DELAY)
     print()
 
 def print_line():
-    print(helpers.CONSOLE_WIDTH * "-")
+    print(config.CONSOLE_WIDTH * "-")
 
 

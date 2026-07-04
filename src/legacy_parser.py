@@ -1,6 +1,6 @@
 import numpy as np
 from pathlib import Path
-import src.helpers as helpers
+import src.helpers as config
 import src.analysis as analysis
 
 def read(folder, start_date):
@@ -25,7 +25,7 @@ def read(folder, start_date):
     for data in datavec:
         clean_data = []
         for idx, col in enumerate(data):
-            n_value = helpers.date_to_n(col[0], start_date)
+            n_value = config.date_to_n(col[0], start_date)
             p_value = float(col[4])
             clean_data.append( [n_value, p_value] )
         clean_datavec.append(clean_data)
@@ -39,7 +39,7 @@ def read(folder, start_date):
         n_vals, p_vals = analysis.forward_fill(n_vals, p_vals)
         temp_datavec.append([n_vals, p_vals])
 
-    L = helpers.date_to_n(helpers.get_today_date(), start_date)
+    L = config.date_to_n(config.get_today_date(), start_date)
     n = list( range(L) )
     p = [None] * L
 

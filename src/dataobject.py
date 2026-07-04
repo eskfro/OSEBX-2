@@ -1,3 +1,10 @@
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import config.config as config
+
 import src.helpers as helpers
 import src.io_functions as io_functions
 import src.analysis as analysis
@@ -18,7 +25,7 @@ class DataObject:
         # Other constants
         self.start_date = None
         self.disp_name = None
-        self.length_f = helpers.ARP_HORIZON
+        self.length_f = config.ARP_HORIZON
         self.a = None
         self.b = None
         self.Px = None
@@ -39,8 +46,8 @@ class DataObject:
         # Movng average arrays
         self.ma_lo_norm = None
         self.ma_hi_norm = None
-        self.ma_lo = [0] * (self.length - helpers.WINDOW_SIZE_LOWER) 
-        self.ma_hi = [0] * (self.length - helpers.WINDOW_SIZE_UPPER)
+        self.ma_lo = [0] * (self.length - config.WINDOW_SIZE_LOWER) 
+        self.ma_hi = [0] * (self.length - config.WINDOW_SIZE_UPPER)
         self.n_ma_lo = None
         self.n_ma_hi = None
 
@@ -112,10 +119,10 @@ class DataObject:
         self.p_norm = analysis.rm_exp_reg(self.p, self.a, self.b, self.length)
 
         # Normalized Prices forecast
-        self.p_norm_f_arp = analysis.forecast_p_norm_arp(self.p_norm, self.length, _lags=helpers.ARP_LAG, horizon=helpers.ARP_HORIZON)
-        self.p_norm_f_ma = analysis.forecast_p_norm_ma(self.p_norm, self.length, window=helpers.MA_WINDOW, horizon=helpers.ARP_HORIZON)
-        self.p_norm_f_ema = analysis.forecast_p_norm_ema(self.p_norm, self.length, alpha=helpers.EMA_ALPHA, horizon=helpers.ARP_HORIZON)
-        self.p_norm_f_sea = analysis.forecast_p_norm_seasonal(self.n, self.p_norm, horizon=helpers.ARP_HORIZON, period=helpers.PERIOD_SEASONAL)
+        self.p_norm_f_arp = analysis.forecast_p_norm_arp(self.p_norm, self.length, _lags=config.ARP_LAG, horizon=config.ARP_HORIZON)
+        self.p_norm_f_ma = analysis.forecast_p_norm_ma(self.p_norm, self.length, window=config.MA_WINDOW, horizon=config.ARP_HORIZON)
+        self.p_norm_f_ema = analysis.forecast_p_norm_ema(self.p_norm, self.length, alpha=config.EMA_ALPHA, horizon=config.ARP_HORIZON)
+        self.p_norm_f_sea = analysis.forecast_p_norm_seasonal(self.n, self.p_norm, horizon=config.ARP_HORIZON, period=config.PERIOD_SEASONAL)
         
         # Fill in price forecasts
         for i in range(self.length_f):
@@ -128,25 +135,25 @@ class DataObject:
 
         
         # Moving averages arrays
-        self.ma_lo_norm = analysis.get_moving_average(helpers.WINDOW_SIZE_LOWER, self.p_norm)
-        self.ma_hi_norm = analysis.get_moving_average(helpers.WINDOW_SIZE_UPPER, self.p_norm)
-        self.n_ma_lo = self.n[helpers.WINDOW_SIZE_LOWER::1]
-        self.n_ma_hi = self.n[helpers.WINDOW_SIZE_UPPER::1]
+        self.ma_lo_norm = analysis.get_moving_average(config.WINDOW_SIZE_LOWER, self.p_norm)
+        self.ma_hi_norm = analysis.get_moving_average(config.WINDOW_SIZE_UPPER, self.p_norm)
+        self.n_ma_lo = self.n[config.WINDOW_SIZE_LOWER::1]
+        self.n_ma_hi = self.n[config.WINDOW_SIZE_UPPER::1]
  
         # Transform normalized MA to real prices
-        for i in range(self.length - helpers.WINDOW_SIZE_LOWER):
-            idx = helpers.WINDOW_SIZE_LOWER + i
+        for i in range(self.length - config.WINDOW_SIZE_LOWER):
+            idx = config.WINDOW_SIZE_LOWER + i
             p_e = helpers.exponential_func(idx, self.a, self.b)
             self.ma_lo[i] = p_e * (1 + self.ma_lo_norm[i]/100)
 
-        for i in range(self.length - helpers.WINDOW_SIZE_UPPER):
-            idx = helpers.WINDOW_SIZE_UPPER + i
+        for i in range(self.length - config.WINDOW_SIZE_UPPER):
+            idx = config.WINDOW_SIZE_UPPER + i
             p_e = helpers.exponential_func(idx, self.a, self.b)
             self.ma_hi[i] = p_e * (1 + self.ma_hi_norm[i]/100)
 
         # Forecast n timeseries 
         self.n_f_start = self.n[-1] + 1
-        self.n_f_end = self.n_f_start + helpers.ARP_HORIZON
+        self.n_f_end = self.n_f_start + config.ARP_HORIZON
         self.n_f = range(self.n_f_start, self.n_f_end)
 
     
@@ -155,7 +162,7 @@ class DataObject:
         r_year = (1 + r_day)**365 - 1
 
         # Time cont. time
-        t = np.linspace(0, helpers.N_CONT_TIME, helpers.N_CONT_TIME+1)
+        t = np.linspace(0, config.N_CONT_TIME, config.N_CONT_TIME+1)
 
         # Figure
         fig, axs = plt.subplots(
@@ -168,14 +175,14 @@ class DataObject:
 
         # Growth plot
         axs[0].set_title("Yearly growth: " + f"{round(r_year * 100, 2)}" + " %")
-        axs[0].plot(self.n, self.p, color=helpers.COLOR_OSEBX, label=self.disp_name+" Index")
+        axs[0].plot(self.n, self.p, color=config.COLOR_OSEBX, label=self.disp_name+" Index")
         axs[0].scatter(self.Px, self.Py, color="red", label="Today")
-        axs[0].grid(helpers.SHOW_GRID)
-        axs[0].plot(t, helpers.exponential_func(t, self.a, self.b), color=helpers.COLOR_EXP_FUNC, label="Mean")
+        axs[0].grid(config.SHOW_GRID)
+        axs[0].plot(t, helpers.exponential_func(t, self.a, self.b), color=config.COLOR_EXP_FUNC, label="Mean")
 
         # Moving averages
-        axs[0].plot(self.n_ma_lo, self.ma_lo, label=f"MA {helpers.WINDOW_SIZE_LOWER}", color=helpers.COLOR_MA_LO)
-        axs[0].plot(self.n_ma_hi, self.ma_hi, label=f"MA {helpers.WINDOW_SIZE_UPPER}", color=helpers.COLOR_MA_HI)
+        axs[0].plot(self.n_ma_lo, self.ma_lo, label=f"MA {config.WINDOW_SIZE_LOWER}", color=config.COLOR_MA_LO)
+        axs[0].plot(self.n_ma_hi, self.ma_hi, label=f"MA {config.WINDOW_SIZE_UPPER}", color=config.COLOR_MA_HI)
 
         # Plot forecasts
         axs[0].plot(self.n_f, self.p_f_arp, label="ARP")
@@ -187,11 +194,11 @@ class DataObject:
             helpers.exponential_func(self.Px, self.a, self.b)
         
         # Normalized plot
-        axs[1].plot(self.n, self.p_norm, label=self.disp_name +" Index Normalized", color=helpers.COLOR_OSEBX_NORM)
+        axs[1].plot(self.n, self.p_norm, label=self.disp_name +" Index Normalized", color=config.COLOR_OSEBX_NORM)
         axs[1].scatter(self.Px, Py_norm, color="red", label="Today")
-        axs[1].axhline(0, color=helpers.COLOR_EXP_FUNC , linewidth="1.2")
-        axs[1].plot(self.n_ma_lo, self.ma_lo_norm, label=f"MA {helpers.WINDOW_SIZE_LOWER}", color=helpers.COLOR_MA_LO)
-        axs[1].plot(self.n_ma_hi, self.ma_hi_norm, label=f"MA {helpers.WINDOW_SIZE_UPPER}", color=helpers.COLOR_MA_HI)
+        axs[1].axhline(0, color=config.COLOR_EXP_FUNC , linewidth="1.2")
+        axs[1].plot(self.n_ma_lo, self.ma_lo_norm, label=f"MA {config.WINDOW_SIZE_LOWER}", color=config.COLOR_MA_LO)
+        axs[1].plot(self.n_ma_hi, self.ma_hi_norm, label=f"MA {config.WINDOW_SIZE_UPPER}", color=config.COLOR_MA_HI)
 
         # Plot normalized forecasts
         axs[1].plot(self.n_f, self.p_norm_f_arp, label="ARP")
@@ -215,9 +222,9 @@ class DataObject:
         axs[1].set_ylim([-25, 25])
         axs[1].legend()
 
-        plt.grid(helpers.SHOW_GRID)
+        plt.grid(config.SHOW_GRID)
 
-        if helpers.SHOW_PLOT:
+        if config.SHOW_PLOT:
             plt.show()
         
             
@@ -258,7 +265,7 @@ class DataObject:
         
 
         # Print column header for indicators
-        w = helpers.COLUMN_WIDTH_INDICATORS
+        w = config.COLUMN_WIDTH_INDICATORS
         re = ["     "]
         io_functions.add_element_to_centered_strings(w, re, "indicator")
         io_functions.add_element_to_centered_strings(w, re, "meaning")
@@ -307,7 +314,7 @@ class Indicator:
         else: advice = "0"
         
         # Column Width 
-        w = helpers.COLUMN_WIDTH_INDICATORS
+        w = config.COLUMN_WIDTH_INDICATORS
         
         # Creates a nice pattern depending on width w
         res += "->   "
