@@ -5,12 +5,11 @@ import src.analysis as analysis
 
 def read(folder, start_date):
 
-    datavec = []
     folder_path = Path(folder)
-  
     if not folder_path.exists():
         raise FileNotFoundError(f"{folder} does not exist")
     
+    datavec = []
     for file in folder_path.glob("*.txt"):
         # ignore test.txt
         if file.name == r"test.txt":

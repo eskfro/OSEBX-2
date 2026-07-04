@@ -2,6 +2,8 @@ import src.helpers as helpers
 import src.io_functions as io_functions
 import src.analysis as analysis
 import numpy as np
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 class DataObject:

@@ -1,8 +1,8 @@
-import src.reader as reader
+import src.legacy_parser as legacy_parser
 import src.helpers as helpers
 import src.io_functions as io_functions
 import src.config as config
-from src.DO import DataObject
+from src.dataobject import DataObject
 
 DEV = 0
 
@@ -40,7 +40,7 @@ def main():
         file, start_date, disp_name = config.CONFIGS[mode]
         
         # Read data from file
-        n, p, length = reader.read(file, start_date) 
+        n, p, length = legacy_parser.read(file, start_date) 
 
         # Init data object
         do = DataObject(n, p, length, status)
