@@ -50,7 +50,6 @@ def update_database_from_downloads():
     if source_name in seen_files:
         print(f"Update source already processed: {source_name}.")
         print("Aborting update.")
-        return
     
     helpers.write_db_seen_files_metadata(source_name)
 

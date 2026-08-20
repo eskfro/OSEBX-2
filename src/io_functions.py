@@ -15,7 +15,7 @@ def exit():
     time.sleep(1)
     print_dotted_lines()
 
-def inputter():
+def get_user_input():
     available_modes = [10, 50]
     inp = get_input("mode price   >>>   ")
     
@@ -23,6 +23,11 @@ def inputter():
         return -1, None
 
     parts = inp.split()
+
+    if len(parts) == 1:
+        if parts[0] == "update":
+            return "update", None
+
     if len(parts) != 2:
         return None, None
 

@@ -94,7 +94,7 @@ class DataObject:
             ind = Indicator(f"int-{n}", dispString, 0.2, color, integral)
             self.indicators.append(ind)
 
-    def create_other_indicators(self):
+    def create_indicators(self):
         # Indicators to be added
         current_price = self.p_norm[-1]
 
@@ -110,7 +110,7 @@ class DataObject:
         
 
 
-    def analyze(self):
+    def timeseries_analysis(self):
         # Update the status dictionary
         self.status["n_full"] = self.n[-1] == self.length - 1
         self.status["is_updated"] = helpers.date_to_n(helpers.get_today_date(), self.start_date) - 3 in self.n
@@ -290,9 +290,6 @@ class Indicator:
         self.weight = _weight
         self.ansiColor = _ansiColor
         self.integral = _integral
-
-        
-
 
     def print_indicator(self):
 
