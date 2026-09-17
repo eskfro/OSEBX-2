@@ -34,8 +34,6 @@ def main():
             update_database_from_downloads()
             continue
 
-
-        
         # Mode dependant configs
         file, start_date, disp_name = config.CONFIGS[mode]
         
