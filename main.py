@@ -21,23 +21,31 @@ def main():
 
         # Get input from user
         
-        mode, p_today = io_functions.get_user_input()
+        p_today = io_functions.get_user_input()
             
         # Handle input
-        if mode == -1: 
+        if p_today == -1: 
             return 0
-        elif mode is None:
+        elif p_today is None:
             io_functions.print_error("Syntax Error")
             count += 1
             continue    
-        elif mode == "update":
+        elif p_today == "update":
             update_database_from_downloads()
             continue
 
-        # Mode dependant configs
-        file, start_date, disp_name = config.CONFIGS[mode]
+
+        
+        start_date = config.START_DATE_SP
+        disp_name = config.DISP_NAME_SP
         
         n, p, length = database.get_timeseries()
+        if p_today == ".":
+            if length == 0:
+                io_functions.print_error("No timeseries data available")
+                count += 1
+                continue
+            p_today = int(p[-1])
 
         # Init data object
         do = DataObject(n, p, length, program_status)
@@ -59,7 +67,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 

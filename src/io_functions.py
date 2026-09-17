@@ -16,33 +16,23 @@ def exit():
     print_dotted_lines()
 
 def get_user_input():
-    available_modes = [10, 50]
-    inp = get_input("mode price   >>>   ")
+    inp = get_input("price   >>>   ")
     
     if inp in ["", " ", "exit"]:
-        return -1, None
+        return -1
+    
+    if inp == "update":
+        return "update"
+    
+    if inp == ".":
+        return "."
 
-    parts = inp.split()
-
-    if len(parts) == 1:
-        if parts[0] == "update":
-            return "update", None
-
-    if len(parts) != 2:
-        return None, None
-
-    # Try converting to ints
     try:
-        mode = int(parts[0])
-        p_today = int(parts[1])
+        p_today = int(inp)
     except ValueError:
-        return None, None
+        return None
 
-    # Validate mode
-    if mode not in available_modes:
-        return None, None
-
-    return mode, p_today
+    return p_today
 
 
 
@@ -66,8 +56,8 @@ def print_ui():
     print_line()
     print_delay("Syntax        | Function" + " "*(config.CONSOLE_WIDTH-35))
     print_line()
-    print_delay("10 price      : OSEBX")
-    print_delay("50 price      : SP 500")
+    print_delay("price         : SP 500")
+    print_delay(".             : Use latest SP 500 value")
     print_line()
     print_delay()
 
@@ -94,5 +84,4 @@ def print_dotted_lines():
 
 def print_line():
     print(config.CONSOLE_WIDTH * "-")
-
 
